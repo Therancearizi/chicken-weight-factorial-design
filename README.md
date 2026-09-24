@@ -74,7 +74,7 @@ fish-solubles levels.
 
 ## Full Report
 
-📄 **[View the complete project report](Statistical_Analysis_Chicken_Weight.pdf)**
+https://github.com/Therancearizi/chicken-weight-factorial-design/blob/main/Statistical%20Analysis%20of%20Chicken%20Weight%20Using%20Factorial%20Design.pdf
 
 The report contains the experimental design, statistical models,
 diagnostic plots, model comparisons, post-hoc analysis, conclusions,
