@@ -1,0 +1,92 @@
+
+## Grouping data into replicates and coding the levels
+Protein<-rep(c(1,1,1,1,1,1,-1,-1,-1,-1,-1,-1),2)
+LP<-rep(c(-1,-1,0,0,1,1,-1,-1,0,0,1,1),2)
+LS<-rep(c(-1,1,-1,1,-1,1,-1,1,-1,1,-1,1),2)
+replicate1<-c(6559,7075,6564,7528,6738,7333,7094,8005,6943,7359,6748,6764)
+replicate2<-c(6292,6779,6622,6856,6444,6361,7053,7657,6249,7292,6422,6560)
+Weight<-c(replicate1, replicate2)
+
+
+
+## Create the data frame
+data<-data.frame(Protein,LP,LS,Weight)
+
+## Plot of data
+plot(data)
+## Box-plot
+par(mfrow=c(2,2))
+boxplot(Weight~Protein, data=data,col="red")
+boxplot(Weight~LP, data=data,col="green")
+boxplot(Weight~LS, data=data,col="blue")
+par(mfrow=c(1,1))
+
+## Plotting the interactions
+par(mfrow=c(2,2))
+interaction.plot(data$LP,data$Protein, data$Weight, type="b", pch=19,
+xlab="LP", ylab="Weight", trace.label="Protein",col="red")
+interaction.plot(data$Protein, data$LS, data$Weight, type="b", pch=19,
+xlab="Protein", ylab="Weight", trace.label="LS",col="blue")
+interaction.plot(data$LP, data$LS, data$Weight, type="b", pch=19,
+xlab="LP", ylab="Weight", trace.label="LS",col="orange")
+par(mfrow=c(1,1))
+
+## Model with main effect
+model1=lm(Weight~Protein+LP+LS,data=data)
+summary(Model1)
+## Model with two interaction effects
+model2=lm(Weight~Protein+LP+LS+Protein:LP+Protein:LS+LP:LS,data=data)
+summary(model2)
+
+
+## Model with three-way interaction effect
+model3=lm(Weight~Protein+LP+LS+Protein:LP+Protein:LS+LP:LS+Protein:LP:LS,data=data)
+summary(model3)
+
+## Comparing model 1, model 2, and model 3
+anova(model1,model2,model3)
+
+## Final model
+Final_model<-lm(Weight~Protein+LP+LS+Protein:LP,data=data)
+summary(Final_model)
+anova(Final_model)
+anova_result <- aov(Weight~Protein+LP+LS+Protein:LP,data=data)
+
+## Check assumptions
+## 1. Homogeneity of variance
+plot(anova_result, 1)
+
+## 2. Normality
+plot(anova_result, 2)
+data$Protein <- factor(data$Protein)
+data$LP <- factor(data$LP)
+data$LS <- factor(data$LS)
+model<-aov(Weight ~ Protein + LP + LS + Protein*LP, data = data)
+
+## Tukey test and Plot
+tukey_result <- TukeyHSD(model, conf.level = 0.99)
+print(tukey_result)
+opat <- par(mfrow=c(2,2),cex=.5)
+plot(tukey_result)
+par(opat)
+
+## Pairwise t-tests with Bonferroni correction for all combinations of factor levels
+pairwise.t.test(data$Weight,data$Protein,p.adjust.method= "bonferroni",conf.level=0.99)pairwise.t.test(data$Weight, data$LS, p.adjust.method = "bonferroni")
+pairwise.t.test(data$Weight, data$LP, p.adjust.method = "bonferroni")
+pairwise.t.test(data$Weight, data$Protein:data$LP, p.adjust.method = "bonferroni")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
